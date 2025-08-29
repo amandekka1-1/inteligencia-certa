@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decisões do Futuro</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="main-container">
+    <header>
+      <h1>Decisões do Futuro</h1>
+      <p>Você é o protagonista de uma era em que a Inteligência Artificial decide o destino da humanidade.</p>
+    </header>
+
+    <section class="start-screen">
+      <button class="start-btn">Iniciar Jornada</button>
+    </section>
+
+    <section class="question-screen" style="display:none;">
+      <div class="question-box"></div>
+      <div class="options-box"></div>
+    </section>
+
+    <section class="result-screen" style="display:none;">
+      <h2>História Final</h2>
+      <p class="result-text"></p>
+      <button class="restart-btn">Reiniciar</button>
+    </section>
+  </div>
+
+  <script>
+    // Perguntas e alternativas narrativas
+    const perguntas = [
+      {
+        enunciado: "Você encontra um robô avançado no caminho para a escola...",
+        alternativas: [
+          { texto: "Fico assustado!", afirmacao: "Sentiu medo da autonomia da máquina." },
+          { texto: "Fico curioso!", afirmacao: "Quis aprender sobre a IA imediatamente." }
+        ]
+      },
+      {
+        enunciado: "No trabalho, a IA sugere mudanças na rotina...",
+        alternativas: [
+          { texto: "Recuso mudanças.", afirmacao: "Preferiu manter os métodos antigos." },
+          { texto: "Aceito e observo.", afirmacao: "Decidiu adaptar-se e aprender com a IA." }
+        ]
+      },
+      {
+        enunciado: "A IA agora pode tomar decisões sobre a cidade...",
+        alternativas: [
+          { texto: "É perigoso confiar nela!", afirmacao: "Cuidou para que humanos supervisem." },
+          { texto: "É uma oportunidade!", afirmacao: "Confiou na tecnologia para melhorar a cidade." }
+        ]
+      }
+    ];
+
+    // Função embaralhar
+    function embaralhar(array) {
+      let copia = [...array];
+      for (let i = copia.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copia[i], copia[j]] = [copia[j], copia[i]];
+      }
+      return copia;
+    }
+
+    // Elementos
+    const startBtn = document.querySelector(".start-btn");
+    const restartBtn = document.querySelector(".restart-btn");
+    const startScreen = document.querySelector(".start-screen");
+    const questionScreen = document.querySelector(".question-screen");
+    const resultScreen = document.querySelector(".result-screen");
+    const questionBox = document.querySelector(".question-box");
+    const optionsBox = document.querySelector(".options-box");
+    const resultText = document.querySelector(".result-text");
+
+    let perguntasEmbaralhadas = [];
+    let indicePergunta = 0;
+    let historiaFinal = [];
+
+    // Iniciar
+    startBtn.addEventListener("click", () => {
+      startScreen.style.display = "none";
+      questionScreen.style.display = "block";
+      perguntasEmbaralhadas = embaralhar(perguntas);
+      indicePergunta = 0;
+      historiaFinal = [];
+      mostrarPergunta();
+    });
+
+    // Mostrar pergunta
+    function mostrarPergunta() {
+      questionBox.innerHTML = "";
+      optionsBox.innerHTML = "";
+
+      if (indicePergunta >= perguntasEmbaralhadas.length) {
+        mostrarResultado();
+        return;
+      }
+
+      const pAtual = perguntasEmbaralhadas[indicePergunta];
+      const enunciado = document.createElement("h3");
+      enunciado.textContent = pAtual.enunciado;
+      questionBox.appendChild(enunciado);
+
+      pAtual.alternativas.forEach(alt => {
+        const btn = document.createElement("button");
+        btn.textContent = alt.texto;
+        btn.classList.add("option-btn");
+        btn.addEventListener("click", () => {
+          historiaFinal.push(alt.afirmacao);
+          indicePergunta++;
+          mostrarPergunta();
+        });
+        optionsBox.appendChild(btn);
+      });
+    }
+
+    // Mostrar resultado
+    function mostrarResultado() {
+      questionScreen.style.display = "none";
+      resultScreen.style.display = "block";
+      resultText.textContent = historiaFinal.join(" ");
+    }
+
+    // Reiniciar
+    restartBtn.addEventListener("click", () => {
+      resultScreen.style.display = "none";
+      startScreen.style.display = "block";
+    });
+  </script>
+</body>
+</html>
